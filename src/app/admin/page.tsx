@@ -15,7 +15,7 @@ const AdminPage = async () => {
 
   const stuff = await prisma.stuff.findMany({});
   const users = await prisma.user.findMany({});
-  const contacts = await prisma.contact.findMany({}); // 👈 Add this line
+  const contacts = await prisma.contact.findMany({});
 
   return (
     <main>

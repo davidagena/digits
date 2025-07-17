@@ -15,7 +15,6 @@ const ListPage = async () => {
 
   const owner = session?.user?.email || '';
 
-  // ✅ Fetch contacts from the database
   const contacts = await prisma.contact.findMany({
     where: {
       owner,
