@@ -2,10 +2,11 @@
 
 import { Card } from 'react-bootstrap';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Contact } from '@/lib/validationSchemas';
 
 interface Props {
-  contact: Contact;
+  contact: Contact & { id: string }; // Ensure the id is passed in
 }
 
 const ContactCard: React.FC<Props> = ({ contact }) => {
@@ -26,6 +27,11 @@ const ContactCard: React.FC<Props> = ({ contact }) => {
         <Card.Subtitle className="mb-2 text-muted">{contact.address}</Card.Subtitle>
         <Card.Text>{contact.description}</Card.Text>
       </Card.Body>
+
+      {/* Add Edit link */}
+      <Card.Footer className="text-center">
+        <Link href={`/edit/${contact.id}`}>Edit</Link>
+      </Card.Footer>
     </Card>
   );
 };
