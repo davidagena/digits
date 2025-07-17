@@ -15,6 +15,7 @@ body {
   padding: 0;
   margin: 0;
   background: fixed center url("/png-tree.png");
+  background: fixed center url("/tree.png");
   background-size: cover;
 }
 
@@ -24,12 +25,18 @@ body .navbar {
   --bs-navbar-brand-hover-color: var(--nat-navbar-highlight-text);
   --bs-navbar-color: var(--nat-navbar-text-color);
   --bs-navbar-hover-color: var(--nat-navbar-highlight-text);
+
 }
 
 footer, footer a {
   color: var(--nat-navbar-text-color);
 }
 
+}
+
+footer, footer a {
+  color: var(--nat-navbar-text-color);
+}
 .wrapper {
   box-sizing: border-box;
   min-height: 100%;
