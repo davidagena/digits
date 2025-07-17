@@ -1,96 +1,106 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import swal from 'sweetalert';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Contact, EditContactSchema } from '@/lib/validationSchemas';
-import { editContact } from '@/lib/dbActions';
+import swal from 'sweetalert';
+import { redirect } from 'next/navigation';
+import { addContact } from '@/lib/dbActions';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { AddContactSchema } from '@/lib/validationSchemas';
 
-const EditContactForm = ({ contact }: { contact: Contact & { id: string } }) => {
+const onSubmit = async (data: {
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}) => {
+  await addContact(data);
+  swal('Success', 'Your contact has been added', 'success', {
+    timer: 2000,
+  });
+};
+
+const AddContactForm: React.FC = () => {
+  const { data: session, status } = useSession();
+  const currentUser = session?.user?.email || '';
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Contact>({
-    resolver: yupResolver(EditContactSchema),
+  } = useForm({
+    resolver: yupResolver(AddContactSchema),
   });
 
-  const onSubmit = async (data: Contact) => {
-    await editContact({ ...data, id: contact.id });
-    swal('Success', 'Contact updated successfully', 'success', {
-      timer: 2000,
-    });
-  };
+  if (status === 'loading') {
+    return <LoadingSpinner />;
+  }
+
+  if (status === 'unauthenticated') {
+    redirect('/auth/signin');
+  }
 
   return (
     <Container className="py-3">
       <Row className="justify-content-center">
         <Col xs={10}>
           <Col className="text-center">
-            <h2>Edit Contact</h2>
+            <h2>Add Contact</h2>
           </Col>
           <Card>
             <Card.Body>
               <Form onSubmit={handleSubmit(onSubmit)}>
-                <input type="hidden" value={contact.id} {...register('id')} />
-
                 <Form.Group>
                   <Form.Label>First Name</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.firstName}
                     {...register('firstName')}
                     className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.firstName?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Last Name</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.lastName}
                     {...register('lastName')}
                     className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.lastName?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Address</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.address}
                     {...register('address')}
                     className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.address?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Image URL</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.image}
                     {...register('image')}
                     className={`form-control ${errors.image ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.image?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Description</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.description}
                     {...register('description')}
                     className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.description?.message}</div>
                 </Form.Group>
-
+                <input type="hidden" {...register('owner')} value={currentUser} />
                 <Form.Group className="form-group">
                   <Row className="pt-3">
                     <Col>
@@ -114,4 +124,4 @@ const EditContactForm = ({ contact }: { contact: Contact & { id: string } }) => 
   );
 };
 
-export default EditContactForm;
+export default AddContactForm;
