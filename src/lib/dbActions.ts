@@ -7,7 +7,6 @@ import { prisma } from './prisma';
 
 /**
  * Adds a new stuff to the database.
- * @param stuff, an object with the following properties: name, quantity, owner, condition.
  */
 export async function addStuff(stuff: { name: string; quantity: number; owner: string; condition: string }) {
   let condition: Condition = 'good';
@@ -31,7 +30,6 @@ export async function addStuff(stuff: { name: string; quantity: number; owner: s
 
 /**
  * Edits an existing stuff in the database.
- * @param stuff, an object with the following properties: id, name, quantity, owner, condition.
  */
 export async function editStuff(stuff: Stuff) {
   await prisma.stuff.update({
@@ -48,7 +46,6 @@ export async function editStuff(stuff: Stuff) {
 
 /**
  * Deletes an existing stuff from the database.
- * @param id, the id of the stuff to delete.
  */
 export async function deleteStuff(id: number) {
   await prisma.stuff.delete({
@@ -59,7 +56,6 @@ export async function deleteStuff(id: number) {
 
 /**
  * Creates a new user in the database.
- * @param credentials, an object with the following properties: email, password.
  */
 export async function createUser(credentials: { email: string; password: string }) {
   const password = await hash(credentials.password, 10);
@@ -72,8 +68,7 @@ export async function createUser(credentials: { email: string; password: string 
 }
 
 /**
- * Changes the password of an existing user in the database.
- * @param credentials, an object with the following properties: email, password.
+ * Changes the password of an existing user.
  */
 export async function changePassword(credentials: { email: string; password: string }) {
   const password = await hash(credentials.password, 10);
@@ -87,7 +82,6 @@ export async function changePassword(credentials: { email: string; password: str
 
 /**
  * Adds a new contact to the Contacts table.
- * @param contact, an object with the following properties: firstName, lastName, address, image, description, owner.
  */
 export async function addContact(contact: {
   firstName: string;
@@ -105,7 +99,6 @@ export async function addContact(contact: {
 
 /**
  * Edits an existing contact in the Contacts table.
- * @param contact, an object with the following properties: id, firstName, lastName, address, image, description.
  */
 export async function editContact(contact: {
   id: string;
@@ -126,4 +119,18 @@ export async function editContact(contact: {
     },
   });
   redirect('/contact-list');
+}
+
+/**
+ * Adds a new note to the Notes table.
+ */
+export async function addNote(note: { note: string; contactId: number; owner: string }) {
+  await prisma.note.create({
+    data: {
+      note: note.note,
+      contactId: note.contactId,
+      owner: note.owner,
+    },
+  });
+  redirect('/list');
 }
