@@ -23,7 +23,6 @@ export const EditStuffSchema = Yup.object({
   owner: Yup.string().required(),
 });
 
-// ✅ Add these new schemas for Contact validation
 export const AddContactSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
@@ -33,3 +32,9 @@ export const AddContactSchema = Yup.object({
 });
 
 export const EditContactSchema = AddContactSchema;
+
+export const AddNoteSchema = Yup.object({
+  note: Yup.string().required('Note is required'),
+  contactId: Yup.number().required('Contact ID is required'),
+  owner: Yup.string().required('Owner is required'),
+});
