@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Condition } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import { hash } from 'bcrypt';
 import * as config from '../config/settings.development.json';
 
@@ -22,22 +22,7 @@ async function main() {
       },
     });
   }
-
-  // ✅ Seed stuff
-  for (const data of config.defaultData) {
-    const condition = (data.condition as Condition) || Condition.good;
-    console.log(`  Adding stuff: ${data.name} (${data.owner})`);
-    await prisma.stuff.create({
-      data: {
-        name: data.name,
-        quantity: data.quantity,
-        owner: data.owner,
-        condition,
-      },
-    });
-  }
-
-  // ✅ Seed contacts
+  
   if ('defaultContacts' in config) {
     for (const contact of config.defaultContacts) {
       console.log(`  Adding contact: ${contact.firstName} ${contact.lastName}`);
