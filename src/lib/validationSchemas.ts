@@ -1,13 +1,5 @@
 import * as Yup from 'yup';
 
-export interface Contact {
-  firstName: string;
-  lastName: string;
-  address: string;
-  image: string;
-  description: string;
-}
-
 export const AddStuffSchema = Yup.object({
   name: Yup.string().required(),
   quantity: Yup.number().positive().required(),
@@ -23,13 +15,39 @@ export const EditStuffSchema = Yup.object({
   owner: Yup.string().required(),
 });
 
-// ✅ Add these new schemas for Contact validation
+// ✅ Contact validation schemas
+
 export const AddContactSchema = Yup.object({
-  firstName: Yup.string().required('First name is required'),
-  lastName: Yup.string().required('Last name is required'),
-  address: Yup.string().required('Address is required'),
-  image: Yup.string().url('Must be a valid URL').required('Image is required'),
-  description: Yup.string().required('Description is required'),
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  address: Yup.string().required(),
+  image: Yup.string().url().required(),
+  description: Yup.string().required(),
+  owner: Yup.string().required(),
 });
 
-export const EditContactSchema = AddContactSchema;
+export const EditContactSchema = Yup.object({
+  id: Yup.number().required(),
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  address: Yup.string().required(),
+  image: Yup.string().url().required(),
+  description: Yup.string().required(),
+  owner: Yup.string().required(),
+});
+
+export const AddNoteSchema = Yup.object({
+  note: Yup.string().required('Note is required'),
+  contactId: Yup.number().required(),
+  owner: Yup.string().required(),
+});
+
+export interface Contact {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}

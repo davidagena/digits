@@ -6,18 +6,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import swal from 'sweetalert';
 import { redirect } from 'next/navigation';
+import { AddContactSchema } from '@/lib/validationSchemas';
 import { addContact } from '@/lib/dbActions';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { AddContactSchema } from '@/lib/validationSchemas';
 
-const onSubmit = async (data: {
-  firstName: string;
-  lastName: string;
-  address: string;
-  image: string;
-  description: string;
-  owner: string;
-}) => {
+const onSubmit = async (data: any) => {
   await addContact(data);
   swal('Success', 'Your contact has been added', 'success', {
     timer: 2000,
@@ -40,7 +33,6 @@ const AddContactForm: React.FC = () => {
   if (status === 'loading') {
     return <LoadingSpinner />;
   }
-
   if (status === 'unauthenticated') {
     redirect('/auth/signin');
   }
@@ -93,8 +85,7 @@ const AddContactForm: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Description</Form.Label>
-                  <input
-                    type="text"
+                  <textarea
                     {...register('description')}
                     className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                   />

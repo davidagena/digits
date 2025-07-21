@@ -7,7 +7,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Contact, EditContactSchema } from '@/lib/validationSchemas';
 import { editContact } from '@/lib/dbActions';
 
-const EditContactForm = ({ contact }: { contact: Contact & { id: string } }) => {
+const onSubmit = async (data: Contact) => {
+  await editContact(data);
+  swal('Success', 'Your contact has been updated', 'success', {
+    timer: 2000,
+  });
+};
+
+const EditContactForm = ({ contact }: { contact: Contact }) => {
   const {
     register,
     handleSubmit,
@@ -16,13 +23,6 @@ const EditContactForm = ({ contact }: { contact: Contact & { id: string } }) => 
   } = useForm<Contact>({
     resolver: yupResolver(EditContactSchema),
   });
-
-  const onSubmit = async (data: Contact) => {
-    await editContact({ ...data, id: contact.id });
-    swal('Success', 'Contact updated successfully', 'success', {
-      timer: 2000,
-    });
-  };
 
   return (
     <Container className="py-3">
@@ -34,63 +34,57 @@ const EditContactForm = ({ contact }: { contact: Contact & { id: string } }) => 
           <Card>
             <Card.Body>
               <Form onSubmit={handleSubmit(onSubmit)}>
-                <input type="hidden" value={contact.id} {...register('id')} />
-
+                <input type="hidden" {...register('id')} value={contact.id} />
                 <Form.Group>
                   <Form.Label>First Name</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.firstName}
                     {...register('firstName')}
+                    defaultValue={contact.firstName}
                     className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.firstName?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Last Name</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.lastName}
                     {...register('lastName')}
+                    defaultValue={contact.lastName}
                     className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.lastName?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Address</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.address}
                     {...register('address')}
+                    defaultValue={contact.address}
                     className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.address?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Image URL</Form.Label>
                   <input
                     type="text"
-                    defaultValue={contact.image}
                     {...register('image')}
+                    defaultValue={contact.image}
                     className={`form-control ${errors.image ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.image?.message}</div>
                 </Form.Group>
-
                 <Form.Group>
                   <Form.Label>Description</Form.Label>
-                  <input
-                    type="text"
-                    defaultValue={contact.description}
+                  <textarea
                     {...register('description')}
+                    defaultValue={contact.description}
                     className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                   />
                   <div className="invalid-feedback">{errors.description?.message}</div>
                 </Form.Group>
-
+                <input type="hidden" {...register('owner')} value={contact.owner} />
                 <Form.Group className="form-group">
                   <Row className="pt-3">
                     <Col>

@@ -58,6 +58,58 @@ export async function deleteStuff(id: number) {
 }
 
 /**
+ * Adds a new contact to the database.
+ * @param contact, an object with the following properties: firstName, lastName, address, image, description, owner.
+ */
+export async function addContact(contact: {
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}) {
+  await prisma.contact.create({
+    data: {
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      address: contact.address,
+      image: contact.image,
+      description: contact.description,
+      owner: contact.owner,
+    },
+  });
+  redirect('/list');
+}
+
+/**
+ * Edits an existing contact in the database.
+ * @param contact, an object with the updated contact fields including the id.
+ */
+export async function editContact(contact: {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}) {
+  await prisma.contact.update({
+    where: { id: contact.id },
+    data: {
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      address: contact.address,
+      image: contact.image,
+      description: contact.description,
+      owner: contact.owner,
+    },
+  });
+  redirect('/list');
+}
+
+/**
  * Creates a new user in the database.
  * @param credentials, an object with the following properties: email, password.
  */
@@ -86,44 +138,16 @@ export async function changePassword(credentials: { email: string; password: str
 }
 
 /**
- * Adds a new contact to the Contacts table.
- * @param contact, an object with the following properties: firstName, lastName, address, image, description, owner.
+ * Adds a new note to the database.
+ * @param note, an object with the following properties: note, contactId, owner.
  */
-export async function addContact(contact: {
-  firstName: string;
-  lastName: string;
-  address: string;
-  image: string;
-  description: string;
-  owner: string;
-}) {
-  await prisma.contact.create({
-    data: contact,
-  });
-  redirect('/contact-list');
-}
-
-/**
- * Edits an existing contact in the Contacts table.
- * @param contact, an object with the following properties: id, firstName, lastName, address, image, description.
- */
-export async function editContact(contact: {
-  id: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  image: string;
-  description: string;
-}) {
-  await prisma.contact.update({
-    where: { id: contact.id },
+export async function addNote(note: { note: string; contactId: number; owner: string }) {
+  await prisma.note.create({
     data: {
-      firstName: contact.firstName,
-      lastName: contact.lastName,
-      address: contact.address,
-      image: contact.image,
-      description: contact.description,
+      note: note.note,
+      contactId: note.contactId,
+      owner: note.owner,
     },
   });
-  redirect('/contact-list');
+  redirect('/list');
 }
